@@ -132,7 +132,21 @@ public class AdUnit: NSObject, DispatcherDelegate {
             }
         }
     }
-    
+
+    /// Like `fetchDemand(adObject:completion:)` — it still attaches the Prebid targeting keywords
+    /// onto `adObject` for ad serving — but returns the full `BidInfo` (including exact winning-bid
+    /// economics) instead of only the result code.
+    dynamic public func fetchDemand(
+        adObject: AnyObject,
+        completionBidInfo: @escaping(_ bidInfo: BidInfo) -> Void
+    ) {
+        baseFetchDemand(adObject: adObject) { bidInfo in
+            DispatchQueue.main.async {
+                completionBidInfo(bidInfo)
+            }
+        }
+    }
+
     // SDK internal
     func baseFetchDemand(
         adObject: AnyObject? = nil,
